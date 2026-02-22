@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import '../widgets/user_type_card.dart';
 import '../theme/app_colors.dart';
-import '../theme/app_text_styles.dart';
-import '../models/user_type_data.dart';
-import 'main_screen.dart';
+import 'model_main_screen.dart';
+import 'stylist_main_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,111 +11,129 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int? _selectedIndex;
-
-  static const List<UserTypeData> _userTypes = [
-    UserTypeData(
-      icon: Icons.content_cut,
-      title: '美容師',
-      subtitle: 'カットモデルを探して、技術を磨く',
-    ),
-    UserTypeData(
-      icon: Icons.person,
-      title: 'カットモデル',
-      subtitle: '無料で施術を受けて、新しいスタイルに挑戦',
-    ),
-    UserTypeData(
-      icon: Icons.business,
-      title: '店舗管理者',
-      subtitle: 'スタッフの活動を管理して、業務を最適化',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final screenHeight = screenSize.height;
     final screenWidth = screenSize.width;
-    final cardHeight = screenHeight * 0.18;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: const Color(0xFFE8EAF6),
       body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                AppColors.backgroundGradientStart,
-                AppColors.backgroundGradientEnd,
-              ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05,
+              vertical: screenHeight * 0.05,
             ),
-          ),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                width: double.infinity,
-                margin: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.04,
-                  vertical: screenHeight * 0.02,
+            child: Column(
+              children: [
+                // Logo
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(28),
+                  ),
+                  child: const Icon(
+                    Icons.content_cut,
+                    size: 60,
+                    color: Colors.white,
+                  ),
                 ),
-                padding: EdgeInsets.all(screenWidth * 0.05),
-                decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(24),
+                SizedBox(height: screenHeight * 0.03),
+                
+                // Title
+                const Text(
+                  'Stylist Edge',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Stylist Edge',
-                      style: AppTextStyles.appTitle.copyWith(
-                        fontSize: screenWidth * 0.08,
+                SizedBox(height: screenHeight * 0.01),
+                
+                // Subtitle
+                const Text(
+                  '美容モデル募集プラットフォーム',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.05),
+                
+                // White card container
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 20,
+                        offset: const Offset(0, 4),
                       ),
-                    ),
-                    SizedBox(height: screenHeight * 0.01),
-                    Text(
-                      '美容師とヘアモデルをつなぐマッチングプラットフォーム',
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.appSubtitle.copyWith(
-                        fontSize: screenWidth * 0.032,
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      const Text(
+                        'ご利用方法を選択',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: screenHeight * 0.03),
-                    ...List.generate(_userTypes.length, (index) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          bottom: index < _userTypes.length - 1 ? 14.0 : 0,
+                      const SizedBox(height: 8),
+                      const Text(
+                        'あなたの立場に合わせてお選びください',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
                         ),
-                        child: UserTypeCard(
-                          icon: _userTypes[index].icon,
-                          title: _userTypes[index].title,
-                          subtitle: _userTypes[index].subtitle,
-                          isSelected: _selectedIndex == index,
-                          height: cardHeight,
-                          width: double.infinity,
-                          onTap: () {
-                            setState(() {
-                              _selectedIndex = index;
-                            });
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MainScreen(
-                                  userType: _userTypes[index].title,
-                                  initialIndex: 1, // Start on Scout tab
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    }),
-                    const SizedBox(height: 20),
-                  ],
+                      ),
+                      const SizedBox(height: 24),
+                      
+                      // Model option (Blue)
+                      _buildUserTypeCard(
+                        context: context,
+                        icon: Icons.person,
+                        title: 'モデルとして利用',
+                        subtitle: '美容モデルの求人に応募する',
+                        color: AppColors.primary,
+                        userType: 'model',
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Stylist option (Purple)
+                      _buildUserTypeCard(
+                        context: context,
+                        icon: Icons.work_outline,
+                        title: '美容師として利用',
+                        subtitle: 'モデルを募集・管理する',
+                        color: const Color(0xFF7B1FA2),
+                        userType: 'stylist',
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                SizedBox(height: screenHeight * 0.03),
+                
+                // Footer
+                const Text(
+                  '利用規約・プライバシーポリシー',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -125,21 +141,78 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showComingSoon(BuildContext context, String userType) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(userType),
-          content: const Text('この機能は開発中です'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+  Widget _buildUserTypeCard({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required String userType,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => userType == 'model'
+                  ? const ModelMainScreen()
+                  : const StylistMainScreen(),
             ),
-          ],
-        );
-      },
+          );
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  size: 28,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -15,7 +15,6 @@ class StylistEdgeApp extends StatelessWidget {
       title: 'Stylist Edge',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
       home: const HomeScreen(),
     );
