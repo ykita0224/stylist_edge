@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_constants.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_constants.dart';
+import '../../widgets/info_row.dart';
+import '../home_screen.dart';
 
 /// Stylist's Profile Screen - Salon profile and information
 class StylistProfileScreen extends StatelessWidget {
@@ -67,21 +69,21 @@ class StylistProfileScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.lg),
                   
                   // Address
-                  _buildInfoRow(
+                  InfoRow(
                     icon: Icons.location_on,
                     text: '東京都世田谷区三軒茶屋1-2-3',
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   
                   // Phone
-                  _buildInfoRow(
+                  InfoRow(
                     icon: Icons.phone,
                     text: '03-1234-5678',
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   
                   // Email
-                  _buildInfoRow(
+                  InfoRow(
                     icon: Icons.email,
                     text: 'info@crea-salon.com',
                   ),
@@ -283,7 +285,12 @@ class StylistProfileScreen extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        // TODO: Handle logout
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                        );
                       },
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(12),
@@ -324,24 +331,6 @@ class StylistProfileScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildInfoRow({required IconData icon, required String text}) {
-    return Row(
-      children: [
-        Icon(icon, size: 20, color: AppColors.textSecondary),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 15,
-              color: AppColors.textSecondary,
-            ),
-          ),
-        ),
-      ],
     );
   }
 

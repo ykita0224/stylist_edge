@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_constants.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_constants.dart';
+import '../../widgets/status_badge.dart';
 
 /// Model's Application History Screen - View past job applications
 class ModelHistoryScreen extends StatelessWidget {
@@ -58,8 +59,7 @@ class ModelHistoryScreen extends StatelessWidget {
                 children: [
                   _buildHistoryCard(
                     context,
-                    status: '承認済み',
-                    statusColor: const Color(0xFF4ADE80),
+                    statusBadge: StatusBadge.approved(),
                     applicationDate: '応募日: 2026年2月17日',
                     jobDate: '2026年2月27日(木)',
                     jobTime: '16:00 - 19:00',
@@ -78,8 +78,7 @@ class ModelHistoryScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.md),
                   _buildHistoryCard(
                     context,
-                    status: '審査中',
-                    statusColor: const Color(0xFFFBBF24),
+                    statusBadge: StatusBadge.pending(),
                     applicationDate: '応募日: 2026年2月16日',
                     jobDate: '2026年2月22日(土)',
                     jobTime: '14:00 - 17:00',
@@ -97,8 +96,7 @@ class ModelHistoryScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.md),
                   _buildHistoryCard(
                     context,
-                    status: '完了',
-                    statusColor: AppColors.primary,
+                    statusBadge: StatusBadge.completed(),
                     applicationDate: '応募日: 2026年2月10日',
                     jobDate: '2026年2月15日(日)',
                     jobTime: '10:00 - 13:00',
@@ -117,8 +115,7 @@ class ModelHistoryScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.md),
                   _buildHistoryCard(
                     context,
-                    status: '見送り',
-                    statusColor: AppColors.textSecondary,
+                    statusBadge: StatusBadge.rejected(),
                     applicationDate: '応募日: 2026年2月8日',
                     jobDate: '2026年2月12日(水)',
                     jobTime: '15:00 - 18:00',
@@ -146,8 +143,7 @@ class ModelHistoryScreen extends StatelessWidget {
 
   Widget _buildHistoryCard(
     BuildContext context, {
-    required String status,
-    required Color statusColor,
+    required StatusBadge statusBadge,
     required String applicationDate,
     required String jobDate,
     required String jobTime,
@@ -186,38 +182,7 @@ class ModelHistoryScreen extends StatelessWidget {
           // Status and Application Date
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
-                  borderRadius: AppRadius.radiusSM,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      isAccepted 
-                        ? Icons.check_circle 
-                        : isCompleted
-                          ? Icons.task_alt
-                          : isRejected
-                            ? Icons.cancel
-                            : Icons.schedule,
-                      size: 16,
-                      color: statusColor,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      status,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: statusColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              statusBadge,
               const Spacer(),
               Text(
                 applicationDate,

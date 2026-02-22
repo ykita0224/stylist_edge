@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_constants.dart';
-import 'model_job_application_screen.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_constants.dart';
+import '../../widgets/filter_chip.dart' as widgets;
+import 'job_application_screen.dart';
 
 /// Model's Job Search Screen - Browse and apply for salon opportunities
 class ModelJobSearchScreen extends StatefulWidget {
@@ -71,9 +72,11 @@ class _ModelJobSearchScreenState extends State<ModelJobSearchScreen> {
                         final isSelected = _selectedArea == area;
                         return Padding(
                           padding: const EdgeInsets.only(right: 8),
-                          child: _buildFilterChip(area, isSelected, () {
-                            setState(() => _selectedArea = area);
-                          }),
+                          child: widgets.FilterChip(
+                            label: area,
+                            isSelected: isSelected,
+                            onTap: () => setState(() => _selectedArea = area),
+                          ),
                         );
                       },
                     ),
@@ -109,9 +112,11 @@ class _ModelJobSearchScreenState extends State<ModelJobSearchScreen> {
                         final isSelected = _selectedMenu == menu;
                         return Padding(
                           padding: const EdgeInsets.only(right: 8),
-                          child: _buildFilterChip(menu, isSelected, () {
-                            setState(() => _selectedMenu = menu);
-                          }),
+                          child: widgets.FilterChip(
+                            label: menu,
+                            isSelected: isSelected,
+                            onTap: () => setState(() => _selectedMenu = menu),
+                          ),
                         );
                       },
                     ),
@@ -178,31 +183,6 @@ class _ModelJobSearchScreenState extends State<ModelJobSearchScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilterChip(String label, bool isSelected, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : Colors.white,
-          borderRadius: AppRadius.radiusXL,
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
-            width: 1,
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: isSelected ? Colors.white : AppColors.textPrimary,
-          ),
         ),
       ),
     );

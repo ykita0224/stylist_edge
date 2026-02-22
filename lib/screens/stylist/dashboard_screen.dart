@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_constants.dart';
-import '../theme/app_text_styles.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_constants.dart';
+import '../../theme/app_text_styles.dart';
+import '../../widgets/stat_card.dart';
+import '../../widgets/section_header.dart';
 import 'applicants_list_screen.dart';
 import 'create_job_screen.dart';
 
@@ -97,7 +99,7 @@ class _StylistDashboardScreenState extends State<StylistDashboardScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildStatCard(
+                        child: StatCard(
                           title: '募集中',
                           value: '5',
                           color: AppColors.secondary,
@@ -105,7 +107,7 @@ class _StylistDashboardScreenState extends State<StylistDashboardScreen> {
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
-                        child: _buildStatCard(
+                        child: StatCard(
                           title: '募集完了',
                           value: '22',
                           color: AppColors.primary,
@@ -113,7 +115,7 @@ class _StylistDashboardScreenState extends State<StylistDashboardScreen> {
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
-                        child: _buildStatCard(
+                        child: StatCard(
                           title: '締切決定',
                           value: '5',
                           color: AppColors.accentSuccess,
@@ -178,46 +180,6 @@ class _StylistDashboardScreenState extends State<StylistDashboardScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildStatCard({
-    required String title,
-    required String value,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.md,
-      ),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: AppRadius.radiusLG,
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: color,
-              height: 1.2,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
       ),
     );
   }

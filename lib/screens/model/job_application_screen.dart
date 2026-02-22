@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_constants.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_constants.dart';
+import '../../widgets/option_button.dart';
 
 /// Model's Job Application Screen - Apply for a job with video and details
 class ModelJobApplicationScreen extends StatefulWidget {
@@ -209,26 +210,26 @@ class _ModelJobApplicationScreenState extends State<ModelJobApplicationScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildOptionButton(
-                          'なし',
-                          _selectedBleachHistory == 'なし',
-                          () => setState(() => _selectedBleachHistory = 'なし'),
+                        child: OptionButton(
+                          label: 'なし',
+                          isSelected: _selectedBleachHistory == 'なし',
+                          onTap: () => setState(() => _selectedBleachHistory = 'なし'),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildOptionButton(
-                          '1回',
-                          _selectedBleachHistory == '1回',
-                          () => setState(() => _selectedBleachHistory = '1回'),
+                        child: OptionButton(
+                          label: '1回',
+                          isSelected: _selectedBleachHistory == '1回',
+                          onTap: () => setState(() => _selectedBleachHistory = '1回'),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildOptionButton(
-                          '2回',
-                          _selectedBleachHistory == '2回',
-                          () => setState(() => _selectedBleachHistory = '2回'),
+                        child: OptionButton(
+                          label: '2回',
+                          isSelected: _selectedBleachHistory == '2回',
+                          onTap: () => setState(() => _selectedBleachHistory = '2回'),
                         ),
                       ),
                     ],
@@ -262,26 +263,26 @@ class _ModelJobApplicationScreenState extends State<ModelJobApplicationScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildOptionButton(
-                          'なし',
-                          _selectedStraighteningHistory == 'なし',
-                          () => setState(() => _selectedStraighteningHistory = 'なし'),
+                        child: OptionButton(
+                          label: 'なし',
+                          isSelected: _selectedStraighteningHistory == 'なし',
+                          onTap: () => setState(() => _selectedStraighteningHistory = 'なし'),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildOptionButton(
-                          '1回',
-                          _selectedStraighteningHistory == '1回',
-                          () => setState(() => _selectedStraighteningHistory = '1回'),
+                        child: OptionButton(
+                          label: '1回',
+                          isSelected: _selectedStraighteningHistory == '1回',
+                          onTap: () => setState(() => _selectedStraighteningHistory = '1回'),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildOptionButton(
-                          '2回',
-                          _selectedStraighteningHistory == '2回',
-                          () => setState(() => _selectedStraighteningHistory = '2回'),
+                        child: OptionButton(
+                          label: '2回',
+                          isSelected: _selectedStraighteningHistory == '2回',
+                          onTap: () => setState(() => _selectedStraighteningHistory = '2回'),
                         ),
                       ),
                     ],
@@ -326,33 +327,6 @@ class _ModelJobApplicationScreenState extends State<ModelJobApplicationScreen> {
           child: const Text(
             '応募する',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOptionButton(String label, bool isSelected, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: AppRadius.radiusMD,
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: isSelected ? AppColors.primary : AppColors.textPrimary,
-            ),
           ),
         ),
       ),

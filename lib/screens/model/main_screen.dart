@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import 'model_job_search_screen.dart';
-import 'model_history_screen.dart';
-import 'model_profile_screen.dart';
+import '../../theme/app_colors.dart';
+import 'job_search_screen.dart';
+import 'history_screen.dart';
+import 'profile_screen.dart';
 
 /// Main screen for Model with bottom navigation
 class ModelMainScreen extends StatefulWidget {

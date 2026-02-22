@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
-import 'model_main_screen.dart';
-import 'stylist_main_screen.dart';
+import '../widgets/user_type_card.dart';
+import 'model/main_screen.dart';
+import 'stylist/main_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -101,24 +102,36 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 24),
                       
                       // Model option (Blue)
-                      _buildUserTypeCard(
-                        context: context,
+                      UserTypeCard(
                         icon: Icons.person,
                         title: 'モデルとして利用',
                         subtitle: '美容モデルの求人に応募する',
                         color: AppColors.primary,
-                        userType: 'model',
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ModelMainScreen(),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 16),
                       
                       // Stylist option (Purple)
-                      _buildUserTypeCard(
-                        context: context,
+                      UserTypeCard(
                         icon: Icons.work_outline,
                         title: '美容師として利用',
                         subtitle: 'モデルを募集・管理する',
                         color: const Color(0xFF7B1FA2),
-                        userType: 'stylist',
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const StylistMainScreen(),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -135,81 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUserTypeCard({
-    required BuildContext context,
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color color,
-    required String userType,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => userType == 'model'
-                  ? const ModelMainScreen()
-                  : const StylistMainScreen(),
-            ),
-          );
-        },
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  icon,
-                  size: 28,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.white.withOpacity(0.9),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
         ),
       ),

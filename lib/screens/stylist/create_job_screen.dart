@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_constants.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_constants.dart';
+import '../../widgets/form_widgets.dart';
 
 /// Create Job Posting Screen - Form to create new job posting
 class CreateJobScreen extends StatefulWidget {
@@ -58,11 +59,11 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
           // Date/Time Settings Section
-          _buildSection(
+          FormSection(
             icon: Icons.calendar_today,
             title: '日時設定',
             children: [
-              _buildLabel('施術日', required: true),
+              FormLabel(text: '施術日', required: true),
               const SizedBox(height: 8),
               TextField(
                 controller: _dateController,
@@ -88,7 +89,7 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabel('開始時刻', required: true),
+                        FormLabel(text: '開始時刻', required: true),
                         const SizedBox(height: 8),
                         TextField(
                           controller: _startTimeController,
@@ -115,7 +116,7 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabel('終了時刻', required: true),
+                        FormLabel(text: '終了時刻', required: true),
                         const SizedBox(height: 8),
                         TextField(
                           controller: _endTimeController,
@@ -145,11 +146,11 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
           const SizedBox(height: AppSpacing.lg),
           
           // Menu/Location Section
-          _buildSection(
+          FormSection(
             icon: Icons.content_cut,
             title: 'メニュー・場所',
             children: [
-              _buildLabel('施術メニュー', required: true),
+              FormLabel(text: '施術メニュー', required: true),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 value: _selectedMenu,
@@ -172,7 +173,7 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
                 onChanged: (value) => setState(() => _selectedMenu = value),
               ),
               const SizedBox(height: AppSpacing.md),
-              _buildLabel('エリア'),
+              FormLabel(text: 'エリア'),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 value: _selectedArea,
@@ -199,11 +200,11 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
           const SizedBox(height: AppSpacing.lg),
           
           // Model Type/Compensation Section
-          _buildSection(
+          FormSection(
             icon: Icons.badge,
             title: 'モデル種別・報酬・募集人数',
             children: [
-              _buildLabel('モデル種別', required: true),
+              FormLabel(text: 'モデル種別', required: true),
               const SizedBox(height: 12),
               Row(
                 children: [
@@ -227,7 +228,7 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),
-              _buildLabel('報酬（円）', required: true),
+              FormLabel(text: '報酬（円）', required: true),
               const SizedBox(height: 8),
               TextField(
                 controller: _compensationController,
@@ -254,7 +255,7 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              _buildLabel('募集人数'),
+              FormLabel(text: '募集人数'),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 value: _selectedCapacity,
@@ -281,11 +282,11 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
           const SizedBox(height: AppSpacing.lg),
           
           // Application Requirements Section
-          _buildSection(
+          FormSection(
             icon: Icons.info_outline,
             title: '応募条件',
             children: [
-              _buildLabel('ブリーチ履歴'),
+              FormLabel(text: 'ブリーチ履歴'),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 value: _selectedBleachHistory,
@@ -307,7 +308,7 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
                 onChanged: (value) => setState(() => _selectedBleachHistory = value!),
               ),
               const SizedBox(height: AppSpacing.md),
-              _buildLabel('縮毛矯正履歴'),
+              FormLabel(text: '縮毛矯正履歴'),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 value: _selectedStraighteningHistory,
@@ -482,67 +483,6 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildSection({
-    required IconData icon,
-    required String title,
-    required List<Widget> children,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: AppRadius.radiusLG,
-        boxShadow: AppShadow.sm,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 24, color: AppColors.secondary),
-              const SizedBox(width: 12),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          ...children,
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text, {bool required = false}) {
-    return Row(
-      children: [
-        Text(
-          text,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        if (required) ...[
-          const SizedBox(width: 4),
-          const Text(
-            '*',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.accentError,
-            ),
-          ),
-        ],
-      ],
     );
   }
 

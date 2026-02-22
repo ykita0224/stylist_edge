@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import 'stylist_dashboard_screen.dart';
-import 'stylist_profile_screen.dart';
+import '../../theme/app_colors.dart';
+import 'dashboard_screen.dart';
+import 'profile_screen.dart';
 
 /// Main screen for Stylist with bottom navigation
 class StylistMainScreen extends StatefulWidget {

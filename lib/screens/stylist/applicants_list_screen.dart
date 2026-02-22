@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_constants.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_constants.dart';
+import '../../widgets/info_row.dart';
+import '../../widgets/filter_chip.dart' as widgets;
 import 'applicant_video_screen.dart';
 
 /// Applicants List Screen - View applicants for a specific job posting
@@ -57,33 +59,15 @@ class _ApplicantsListScreenState extends State<ApplicantsListScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.calendar_today, size: 16, color: AppColors.secondary),
-                    const SizedBox(width: 8),
-                    Text(
-                      widget.date,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ],
+                InfoRow(
+                  icon: Icons.calendar_today,
+                  text: widget.date,
+                  iconColor: AppColors.secondary,
                 ),
                 const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Icon(Icons.access_time, size: 16, color: AppColors.textSecondary),
-                    const SizedBox(width: 8),
-                    Text(
-                      widget.time,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
+                InfoRow(
+                  icon: Icons.access_time,
+                  text: widget.time,
                 ),
                 const SizedBox(height: 8),
                 Text(

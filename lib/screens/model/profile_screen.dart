@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_constants.dart';
-import 'home_screen.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_constants.dart';
+import '../../widgets/info_row.dart';
+import '../home_screen.dart';
 
 /// Model's Profile Screen
 class ModelProfileScreen extends StatelessWidget {
@@ -84,34 +85,14 @@ class ModelProfileScreen extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(height: 8),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.email, size: 16, color: AppColors.textSecondary),
-                                      const SizedBox(width: 6),
-                                      Expanded(
-                                        child: Text(
-                                          'misaki.tanaka@example.com',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: AppColors.textSecondary,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                  InfoRow(
+                                    icon: Icons.email,
+                                    text: 'misaki.tanaka@example.com',
                                   ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.phone, size: 16, color: AppColors.textSecondary),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        '090-1234-5678',
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: AppColors.textSecondary,
-                                        ),
-                                      ),
-                                    ],
+                                  const SizedBox(height: 6),
+                                  InfoRow(
+                                    icon: Icons.phone,
+                                    text: '090-1234-5678',
                                   ),
                                 ],
                               ),
@@ -174,13 +155,13 @@ class ModelProfileScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: AppSpacing.lg),
                         
-                        _buildInfoRow('髪質', '普通毛'),
+                        LabeledInfoRow(label: '髪質', value: '普通毛'),
                         const SizedBox(height: AppSpacing.md),
-                        _buildInfoRow('髪の長さ', 'ミディアム'),
+                        LabeledInfoRow(label: '髪の長さ', value: 'ミディアム'),
                         const SizedBox(height: AppSpacing.md),
-                        _buildInfoRow('ブリーチ履歴', 'なし'),
+                        LabeledInfoRow(label: 'ブリーチ履歴', value: 'なし'),
                         const SizedBox(height: AppSpacing.md),
-                        _buildInfoRow('縮毛矯正履歴', '1年以上前'),
+                        LabeledInfoRow(label: '縮毛矯正履歴', value: '1年以上前'),
                         
                         const SizedBox(height: AppSpacing.lg),
                         
@@ -372,29 +353,6 @@ class ModelProfileScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            color: AppColors.textSecondary,
-          ),
-        ),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-          ),
-        ),
-      ],
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_constants.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_constants.dart';
+import '../../widgets/info_row.dart';
 
 /// Applicant Video Detail Screen - View applicant's hair video and analysis
 class ApplicantVideoScreen extends StatelessWidget {
