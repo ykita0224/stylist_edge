@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
-import '../widgets/user_type_card.dart';
-import 'model/main_screen.dart';
-import 'stylist/main_screen.dart';
+import 'auth/login_screen.dart';
+import 'auth/register_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final screenHeight = screenSize.height;
-    final screenWidth = screenSize.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: const Color(0xFFE8EAF6),
@@ -24,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.05,
+              horizontal: MediaQuery.of(context).size.width * 0.05,
               vertical: screenHeight * 0.05,
             ),
             child: Column(
@@ -37,15 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: AppColors.primary,
                     borderRadius: BorderRadius.circular(28),
                   ),
-                  child: const Icon(
-                    Icons.content_cut,
-                    size: 60,
-                    color: Colors.white,
-                  ),
+                  child: const Icon(Icons.content_cut, size: 60, color: Colors.white),
                 ),
                 SizedBox(height: screenHeight * 0.03),
-                
-                // Title
+
                 const Text(
                   'Stylist Edge',
                   style: TextStyle(
@@ -55,18 +42,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.01),
-                
-                // Subtitle
                 const Text(
                   '美容モデル募集プラットフォーム',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black54,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
                 ),
                 SizedBox(height: screenHeight * 0.05),
-                
-                // White card container
+
+                // CTA Card
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
@@ -82,9 +64,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Text(
-                        'ご利用方法を選択',
+                        'はじめましょう',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -93,58 +77,63 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        'あなたの立場に合わせてお選びください',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black54,
+                        'モデルや美容師として求人プラットフォームをご利用ください',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14, color: Colors.black54),
+                      ),
+                      const SizedBox(height: 28),
+
+                      // Login button
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const LoginScreen()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'ログイン',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      const SizedBox(height: 24),
-                      
-                      // Model option (Blue)
-                      UserTypeCard(
-                        icon: Icons.person,
-                        title: 'モデルとして利用',
-                        subtitle: '美容モデルの求人に応募する',
-                        color: AppColors.primary,
-                        onTap: () {
-                          Navigator.pushReplacement(
+                      const SizedBox(height: 12),
+
+                      // Register button
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => const ModelMainScreen(),
-                            ),
+                            MaterialPageRoute(builder: (_) => const RegisterScreen()),
                           );
                         },
-                      ),
-                      const SizedBox(height: 16),
-                      
-                      // Stylist option (Purple)
-                      UserTypeCard(
-                        icon: Icons.work_outline,
-                        title: '美容師として利用',
-                        subtitle: 'モデルを募集・管理する',
-                        color: const Color(0xFF7B1FA2),
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const StylistMainScreen(),
-                            ),
-                          );
-                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.primary,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          side: BorderSide(color: AppColors.primary),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          '新規登録',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.03),
-                
-                // Footer
                 const Text(
                   '利用規約・プライバシーポリシー',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.black54,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.black54),
                 ),
               ],
             ),

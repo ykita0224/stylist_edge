@@ -2,21 +2,15 @@ import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_constants.dart';
 import '../../widgets/info_row.dart';
-import '../../widgets/filter_chip.dart' as widgets;
+import '../../models/job_model.dart';
+import '../../models/application_model.dart';
+import '../../services/api_service.dart';
 import 'applicant_video_screen.dart';
 
-/// Applicants List Screen - View applicants for a specific job posting
 class ApplicantsListScreen extends StatefulWidget {
-  final String date;
-  final String time;
-  final String menu;
+  final JobModel job;
 
-  const ApplicantsListScreen({
-    super.key,
-    required this.date,
-    required this.time,
-    required this.menu,
-  });
+  const ApplicantsListScreen({super.key, required this.job});
 
   @override
   State<ApplicantsListScreen> createState() => _ApplicantsListScreenState();
@@ -24,9 +18,57 @@ class ApplicantsListScreen extends StatefulWidget {
 
 class _ApplicantsListScreenState extends State<ApplicantsListScreen> {
   String _filter = 'すべて';
+  List<ApplicantModel> _applicants = [];
+  bool _isLoading = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchApplicants();
+  }
+
+  Future<void> _fetchApplicants() async {
+    setState(() { _isLoading = true; _error = null; });
+    try {
+      final applicants = await ApiService.instance.getApplicants(widget.job.id);
+      setState(() => _applicants = applicants);
+    } on ApiException catch (e) {
+      setState(() => _error = e.message);
+    } catch (_) {
+      setState(() => _error = '応募者の取得に失敗しました');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _updateStatus(int applicationId, String status) async {
+    try {
+      await ApiService.instance.updateApplicationStatus(applicationId, status);
+      await _fetchApplicants();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(status == 'approved' ? '承認しました' : '不採用にしました'),
+            backgroundColor: status == 'approved' ? AppColors.accentSuccess : AppColors.accentError,
+          ),
+        );
+      }
+    } on ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message), backgroundColor: AppColors.accentError));
+      }
+    }
+  }
+
+  List<ApplicantModel> get _filteredApplicants {
+    if (_filter == 'すべて') return _applicants;
+    return _applicants.where((a) => a.status == 'pending').toList();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final job = widget.job;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -36,18 +78,11 @@ class _ApplicantsListScreenState extends State<ApplicantsListScreen> {
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          '応募者リスト',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
-        ),
+        title: const Text('応募者リスト', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
       ),
       body: Column(
         children: [
-          // Job Info Card
+          // Job Info
           Container(
             margin: const EdgeInsets.all(AppSpacing.md),
             padding: const EdgeInsets.all(AppSpacing.md),
@@ -59,41 +94,23 @@ class _ApplicantsListScreenState extends State<ApplicantsListScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                InfoRow(
-                  icon: Icons.calendar_today,
-                  text: widget.date,
-                  iconColor: AppColors.secondary,
-                ),
+                InfoRow(icon: Icons.calendar_today, text: job.jobDate, iconColor: AppColors.secondary),
                 const SizedBox(height: 6),
-                InfoRow(
-                  icon: Icons.access_time,
-                  text: widget.time,
-                ),
+                InfoRow(icon: Icons.access_time, text: job.timeRange),
                 const SizedBox(height: 8),
-                Text(
-                  widget.menu,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.secondary,
-                  ),
-                ),
+                Text(job.menu, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.secondary)),
               ],
             ),
           ),
-          
-          // Filter Section
+
+          // Filter
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Row(
               children: [
-                const Text(
-                  '3名の応募',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
+                Text(
+                  _isLoading ? '読み込み中...' : '${_filteredApplicants.length}名の応募',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
                 ),
                 const Spacer(),
                 _buildFilterButton('すべて'),
@@ -103,37 +120,33 @@ class _ApplicantsListScreenState extends State<ApplicantsListScreen> {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          
-          // Applicants List
+
+          // Content
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              children: [
-                _buildApplicantCard(
-                  name: '田中 美咲',
-                  age: 24,
-                  isNew: true,
-                  hairInfo: ['ブリーチなし', '普通毛', 'ミディアム'],
-                  appliedDate: '2026年2月17日',
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _buildApplicantCard(
-                  name: '佐藤 花子',
-                  age: 28,
-                  isNew: false,
-                  hairInfo: ['ブリーチあり (1年以上前)', '細毛', 'ロング'],
-                  appliedDate: '2026年2月16日',
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _buildApplicantCard(
-                  name: '鈴木 愛美',
-                  age: 22,
-                  isNew: true,
-                  hairInfo: ['ブリーチなし', '縮毛矯正 (1年以上前)', 'ミディアム'],
-                  appliedDate: '2026年2月16日',
-                ),
-              ],
-            ),
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _error != null
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_error!, style: const TextStyle(color: AppColors.accentError)),
+                            const SizedBox(height: 12),
+                            ElevatedButton(onPressed: _fetchApplicants, child: const Text('再試行')),
+                          ],
+                        ),
+                      )
+                    : _filteredApplicants.isEmpty
+                        ? const Center(child: Text('応募者がいません', style: TextStyle(color: AppColors.textSecondary)))
+                        : RefreshIndicator(
+                            onRefresh: _fetchApplicants,
+                            child: ListView.separated(
+                              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                              itemCount: _filteredApplicants.length,
+                              separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
+                              itemBuilder: (_, index) => _buildApplicantCard(_filteredApplicants[index]),
+                            ),
+                          ),
           ),
         ],
       ),
@@ -149,9 +162,7 @@ class _ApplicantsListScreenState extends State<ApplicantsListScreen> {
         decoration: BoxDecoration(
           color: isSelected ? Colors.white : Colors.transparent,
           borderRadius: AppRadius.radiusXL,
-          border: Border.all(
-            color: isSelected ? AppColors.border : Colors.transparent,
-          ),
+          border: Border.all(color: isSelected ? AppColors.border : Colors.transparent),
         ),
         child: Text(
           label,
@@ -165,13 +176,11 @@ class _ApplicantsListScreenState extends State<ApplicantsListScreen> {
     );
   }
 
-  Widget _buildApplicantCard({
-    required String name,
-    required int age,
-    required bool isNew,
-    required List<String> hairInfo,
-    required String appliedDate,
-  }) {
+  Widget _buildApplicantCard(ApplicantModel applicant) {
+    final model = applicant.model;
+    final isNew = applicant.status == 'pending';
+    final hairLabels = model.hairInfo?.labels ?? [];
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
@@ -183,22 +192,13 @@ class _ApplicantsListScreenState extends State<ApplicantsListScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Profile Section
+          // Profile
           Row(
             children: [
-              // Avatar
               Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceLight,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.person_outline,
-                  size: 32,
-                  color: AppColors.textSecondary,
-                ),
+                width: 60, height: 60,
+                decoration: BoxDecoration(color: AppColors.surfaceLight, shape: BoxShape.circle),
+                child: Icon(Icons.person_outline, size: 32, color: AppColors.textSecondary),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
@@ -207,156 +207,117 @@ class _ApplicantsListScreenState extends State<ApplicantsListScreen> {
                   children: [
                     Row(
                       children: [
-                        Text(
-                          '$name ($age歳)',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
+                        Text(model.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: isNew ? const Color(0xFFFFF9E6) : AppColors.primary.withOpacity(0.1),
+                            borderRadius: AppRadius.radiusSM,
+                          ),
+                          child: Text(
+                            isNew ? '新規' : _statusLabel(applicant.status),
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: isNew ? const Color(0xFFE6A800) : AppColors.primary,
+                            ),
                           ),
                         ),
-                        if (isNew) ...[
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFFF9E6),
-                              borderRadius: AppRadius.radiusSM,
-                            ),
-                            child: const Text(
-                              '新規',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFFE6A800),
-                              ),
-                            ),
-                          ),
-                        ] else ...[
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
-                              borderRadius: AppRadius.radiusSM,
-                            ),
-                            child: const Text(
-                              '確認済み',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      children: hairInfo.map((info) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
+                    if (hairLabels.isNotEmpty)
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: hairLabels.map((info) => Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
                             color: AppColors.secondary.withOpacity(0.1),
                             borderRadius: AppRadius.radiusSM,
                           ),
-                          child: Text(
-                            info,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: AppColors.secondary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                          child: Text(info, style: const TextStyle(fontSize: 11, color: AppColors.secondary, fontWeight: FontWeight.w500)),
+                        )).toList(),
+                      ),
+                    if (applicant.message != null && applicant.message!.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Text(applicant.message!, style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                    ],
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          
-          // Applied Date
-          Text(
-            '応募日: $appliedDate',
-            style: const TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary,
-            ),
-          ),
+
+          // Applied date
+          Text('応募日: ${applicant.appliedAt.substring(0, 10)}', style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
           const SizedBox(height: AppSpacing.md),
-          
-          // Action Buttons
-          Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ApplicantVideoScreen(
-                          name: name,
-                          age: age,
-                        ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.play_arrow, size: 18),
-                  label: const Text(
-                    '動画を確認',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.secondary,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: AppRadius.radiusMD,
+
+          // Action Buttons (only for pending)
+          if (isNew)
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (_) => ApplicantVideoScreen(name: model.name, age: 0),
+                      ));
+                    },
+                    icon: const Icon(Icons.play_arrow, size: 18),
+                    label: const Text('動画を確認', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.secondary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMD),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    // TODO: Reject
-                  },
-                  icon: const Icon(Icons.close, size: 18),
-                  label: const Text(
-                    '不採用',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.textPrimary,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    side: BorderSide(color: AppColors.border),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: AppRadius.radiusMD,
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => _updateStatus(applicant.id, 'approved'),
+                    icon: const Icon(Icons.check, size: 18),
+                    label: const Text('承認', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.accentSuccess,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMD),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _updateStatus(applicant.id, 'rejected'),
+                    icon: const Icon(Icons.close, size: 18),
+                    label: const Text('不採用', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textPrimary,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      side: BorderSide(color: AppColors.border),
+                      shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMD),
+                    ),
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );
+  }
+
+  String _statusLabel(String status) {
+    switch (status) {
+      case 'approved': return '承認済み';
+      case 'rejected': return '不採用';
+      case 'completed': return '完了';
+      default: return status;
+    }
   }
 }

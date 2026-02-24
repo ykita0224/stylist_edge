@@ -45,7 +45,7 @@ class PrimaryButton extends StatelessWidget {
                   Icon(icon, size: 20),
                   const SizedBox(width: 8),
                 ],
-                Text(text, style: AppTextStyles.buttonText),
+                Text(text, style: AppTextStyles.buttonLarge),
               ],
             ),
     );
@@ -83,7 +83,7 @@ class SecondaryButton extends StatelessWidget {
             Icon(icon, size: 20),
             const SizedBox(width: 8),
           ],
-          Text(text, style: AppTextStyles.buttonText.copyWith(color: AppColors.primary)),
+          Text(text, style: AppTextStyles.buttonLarge.copyWith(color: AppColors.primary)),
         ],
       ),
     );

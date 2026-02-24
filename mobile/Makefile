@@ -1,4 +1,6 @@
-.PHONY: help install run clean build-android build-ios test format doctor docker-build docker-run docker-shell docker-clean
+.PHONY: help install run run-iphone16pro clean build-android build-ios test format doctor docker-build docker-run docker-shell docker-clean
+
+IPHONE16PRO_UDID := 3A868914-13C0-42FA-8A43-C7FF1245C715
 
 help:
 	@echo "Stylist Edge - Flutter App Makefile"
@@ -7,7 +9,8 @@ help:
 	@echo "  make install       - Install Flutter dependencies"
 	@echo "  make run          - Run the app on connected device"
 	@echo "  make run-android  - Run the app on Android device/emulator"
-	@echo "  make run-ios      - Run the app on iOS simulator/device"
+	@echo "  make run-ios          - Run the app on iOS simulator/device"
+	@echo "  make run-iphone16pro  - Boot iPhone 16 Pro simulator and run the app"
 	@echo "  make clean        - Clean Flutter build files"
 	@echo "  make build-android - Build APK for Android"
 	@echo "  make build-ios    - Build IPA for iOS"
@@ -36,6 +39,13 @@ run-android:
 run-ios:
 	@echo "Running on iOS..."
 	flutter run -d ios
+
+run-iphone16pro:
+	@echo "Booting iPhone 16 Pro simulator..."
+	open -a Simulator
+	xcrun simctl boot $(IPHONE16PRO_UDID) 2>/dev/null || true
+	@echo "Running on iPhone 16 Pro..."
+	flutter run -d $(IPHONE16PRO_UDID)
 
 clean:
 	@echo "Cleaning build files..."
