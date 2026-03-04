@@ -17,7 +17,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
-  String _role = 'model';
   bool _isLoading = false;
   String? _error;
 
@@ -43,7 +42,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text,
-        role: _role,
+        role: 'model',
         phone: _phoneController.text.trim(),
       );
       await AuthService.instance.saveAuth(auth);
@@ -98,36 +97,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Text(
-                  'アカウント作成',
+                  'モデル新規登録',
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 24),
-
-                // Role selector
-                Row(
-                  children: [
-                    Expanded(
-                      child: _RoleCard(
-                        label: 'モデル',
-                        icon: Icons.person,
-                        color: AppColors.primary,
-                        isSelected: _role == 'model',
-                        onTap: () => setState(() => _role = 'model'),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _RoleCard(
-                        label: '美容師',
-                        icon: Icons.content_cut,
-                        color: AppColors.secondary,
-                        isSelected: _role == 'stylist',
-                        onTap: () => setState(() => _role = 'stylist'),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
 
                 TextField(
                   controller: _nameController,
@@ -211,49 +184,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 }
 
-class _RoleCard extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final Color color;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _RoleCard({
-    required this.label,
-    required this.icon,
-    required this.color,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: isSelected ? color.withOpacity(0.1) : Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? color : Colors.grey.shade300,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: isSelected ? color : Colors.grey, size: 28),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: isSelected ? color : Colors.grey.shade600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

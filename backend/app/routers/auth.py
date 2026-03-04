@@ -12,6 +12,12 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def register(payload: UserCreate, db: AsyncSession = Depends(get_db)):
+    if payload.role == "stylist":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Stylist accounts can only be created by administrators",
+        )
+
     result = await db.execute(select(User).where(User.email == payload.email))
     if result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Email already registered")

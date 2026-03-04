@@ -77,7 +77,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        'モデルや美容師として求人プラットフォームをご利用ください',
+                        'モデルとして求人プラットフォームをご利用ください',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 14, color: Colors.black54),
                       ),
@@ -123,7 +123,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         child: const Text(
-                          '新規登録',
+                          'モデル新規登録',
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),

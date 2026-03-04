@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "backend",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "--build"],
+      "port": 8001
+    },
+    {
+      "name": "flutter-web",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd mobile && C:\\flutter\\bin\\flutter.bat run -d web-server --web-port=3000"],
+      "port": 3000
+    }
+  ]
+}
